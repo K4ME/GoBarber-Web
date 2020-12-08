@@ -1,5 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
+import DayPicker, {DayModifiers} from 'react-day-picker';
+import 'react-day-picker/lib/style.css';
 
+import { FiClock, FiPower } from 'react-icons/fi';
 import {
   Container,
   Header,
@@ -14,12 +17,18 @@ import {
 } from './styles';
 
 import logoImg from '../../assets/logo.svg';
-import { FiClock, FiPower } from 'react-icons/fi';
 import { useAuth } from '../../hooks/Auth';
 
 const Dashboard: React.FC = () => {
 
   const [selectedDate, setSelectedDate] = useState(new Date());
+
+  const handleDateChange = useCallback((day: Date, modifiers: DayModifiers) => {
+      if (modifiers.available){
+        setSelectedDate(day);
+      }
+    },[],
+  );
 
   const { signOut, user } = useAuth();
 
@@ -57,7 +66,7 @@ const Dashboard: React.FC = () => {
           <strong> Atendimento a seguir </strong>
           <div>
             <img
-              src='https://avatars3.githubusercontent.com/u/33429566?s=460&u=c81dfc54c50ed2c2f8399fea7b1df4fefe1ddb64&v=4'
+              src='https://avatars3.githubusercontent.com/u/33429566?s=400&u=c81dfc54c50ed2c2f8399fea7b1df4fefe1ddb64&v=4'
               alt='Guilherme Macrini'
             />
 
@@ -110,7 +119,32 @@ const Dashboard: React.FC = () => {
           </Appointment>
         </Section>
         </Schedule>
-        <Calendar />
+        <Calendar>
+          <DayPicker
+            weekdaysShort={['D', 'S', 'T', 'Q', 'Q', 'S', 'S']}
+            fromMonth={new Date()}
+            disabledDays={[{daysOfWeek: [0,6]}]}
+            modifiers={{
+              available: {daysOfWeek: [1, 2, 3, 4, 5] },
+            }}
+            selectedDays={selectedDate}
+            onDayClick={handleDateChange}
+            months={[
+              'Janeiro',
+              'Fevereiro',
+              'Março',
+              'Abril',
+              'Maio',
+              'Junho',
+              'Julho',
+              'Agosto',
+              'Setembro',
+              'Outubro',
+              'Novembro',
+              'Dezembro',
+            ]}
+          />
+        </Calendar>
       </Content>
     </Container>
   )
